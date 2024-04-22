@@ -1,8 +1,20 @@
-import { readdirSync, writeFileSync, cpSync } from "node:fs";
+import { readdirSync, writeFileSync, cpSync, rmSync, mkdirSync } from "node:fs";
 import emoji_map from "./emoji_map.json";
 const dir = readdirSync("./png");
+const aliases = {
+    "❤️": "❤",
+};
 
 let output = {};
+
+try {
+    rmSync("emojis", { recursive: true, force: true });
+    mkdirSync("emojis");
+} catch (_) {
+    console.log("Something happened when trying to reinitalize the emojis directory");
+    console.log(_);
+    process.exit(1);
+}
 
 for (let emojiName of Object.keys(emoji_map)) {
     let emojiUtfEscape = emoji_map[emojiName];
@@ -16,7 +28,8 @@ for (let emojiName of Object.keys(emoji_map)) {
         }
 
         let codepoint = String.fromCodePoint(...z);
-        if (codepoint === emojiUtfEscape) {
+
+        if (codepoint === emojiUtfEscape || aliases[emojiUtfEscape] === codepoint) {
             console.log(`Found ${emojiName} (${codepoint})!`);
             cpSync(`./png/${emojiFile}`, `./emojis/${emojiFile}`);
             output[emojiName] = `https://cdn.jsdelivr.net/gh/cirroskais/discord-blobmoji/emojis/${emojiFile}`;
