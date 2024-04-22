@@ -19,7 +19,7 @@ for (let emojiName of Object.keys(emoji_map)) {
         if (codepoint === emojiUtfEscape) {
             console.log(`Found ${emojiName} (${codepoint})!`);
             cpSync(`./png/${emojiFile}`, `./emojis/${emojiFile}`);
-            output[emojiName] = `emojis/${emojiFile}`;
+            output[emojiName] = `https://cdn.jsdelivr.net/gh/cirroskais/discord-blobmoji/emojis/${emojiFile}`;
         }
     }
 }
